@@ -91,7 +91,7 @@ class NSQData(object):
 
     def getColumnValues(self, column):
         self._check_col(column)
-        return self.data[column].unique().tolist()
+        return np.asarray(self.data[column].unique())
 
     def getData(self, check_vals=False, as_location=False, **kwargs):
         """ Returns a pandas.DataFrame copy of a filtered dataset
