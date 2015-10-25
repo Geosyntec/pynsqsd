@@ -55,12 +55,21 @@ class NSQData(object):
 
             df = pandas.read_csv(self.datapath, na_values=['--', "nan"])
 
+            cat_columns = [
+                'primary_landuse',
+                'secondary_landuse',
+                'season',
+                'parameter',
+                'units'
+            ]
+
             self._data = (
                 df.assign(primary_landuse=df['primary_landuse'].replace(to_replace=landuses))
                   .assign(secondary_landuse=df['secondary_landuse'].replace(to_replace=landuses))
                   .assign(start_date=df['start_date'].apply(wqio.utils.santizeTimestamp))
                   .assign(season=df['start_date'].apply(wqio.utils.getSeason))
                   .assign(station='outflow')
+                  .pipe(wqio.utils.categorize_columns, *cat_columns)
             )
         return self._data
 
