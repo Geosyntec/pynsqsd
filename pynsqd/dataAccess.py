@@ -55,12 +55,21 @@ class NSQData(object):
 
             df = pandas.read_csv(self.datapath, na_values=['--', "nan"])
 
+            cat_columns = [
+                'primary_landuse',
+                'secondary_landuse',
+                'season',
+                'parameter',
+                'units'
+            ]
+
             self._data = (
                 df.assign(primary_landuse=df['primary_landuse'].replace(to_replace=landuses))
                   .assign(secondary_landuse=df['secondary_landuse'].replace(to_replace=landuses))
                   .assign(start_date=df['start_date'].apply(wqio.utils.santizeTimestamp))
                   .assign(season=df['start_date'].apply(wqio.utils.getSeason))
                   .assign(station='outflow')
+                  .pipe(wqio.utils.categorize_columns, *cat_columns)
             )
         return self._data
 
@@ -82,7 +91,7 @@ class NSQData(object):
 
     def getColumnValues(self, column):
         self._check_col(column)
-        return self.data[column].unique().tolist()
+        return np.asarray(self.data[column].unique())
 
     def getData(self, check_vals=False, as_location=False, **kwargs):
         """ Returns a pandas.DataFrame copy of a filtered dataset

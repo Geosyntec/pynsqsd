@@ -38,21 +38,20 @@ class test_NSQData:
 
     def test_data_season(self):
         known_seasons = ['autumn', 'spring', 'summer', 'winter']
-        seasons = sorted(self.data.data['season'].unique().tolist())
+        seasons = sorted(self.data.data['season'].unique())
         nt.assert_list_equal(seasons, known_seasons)
 
     def test_landuses(self):
         nt.assert_true(hasattr(self.data, 'landuses'))
-        nt.assert_is_instance(self.data.landuses, list)
+        nt.assert_is_instance(self.data.landuses, np.ndarray)
         nptest.assert_array_equal(
             sorted(self.data.landuses),
             sorted(self.known_landuses)
         )
 
     def test_parameters(self):
-        '''Doesn't test values -- too many to list out'''
         nt.assert_true(hasattr(self.data, 'parameters'))
-        nt.assert_is_instance(self.data.parameters, list)
+        nt.assert_is_instance(self.data.parameters, np.ndarray)
 
     @nt.raises(ValueError)
     def test__check_col_bad(self):
@@ -63,7 +62,7 @@ class test_NSQData:
 
     def test_getColumnValues(self):
         plu = self.data.getColumnValues('primary_landuse')
-        nt.assert_is_instance(self.data.landuses, list)
+        nt.assert_is_instance(self.data.landuses, np.ndarray)
         nptest.assert_array_equal(
             sorted(self.data.landuses),
             sorted(self.known_landuses)
